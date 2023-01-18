@@ -7,7 +7,7 @@ loadkeys fr (or whatever)
 Run ``` sudo raspi-config```: setup language, wifi, hostname; enable ssh-server, choose "Console Autologin" as boot option.   
 Change passwd.  
 Run:
-```
+```sh
 sudo apt-get update  
 sudo apt-get dist-upgrade  
 sudo apt-get install git  
@@ -18,26 +18,45 @@ scp @editor_hostname.local:/home/@editor_user/.ssh/id_rsa.pub > authorized_keys
 
 ## Download, compile and install Pure Data
 ### download:
+
+```sh
 mkdir ~/sources  
 cd ~/sources/  
 git clone https://github.com/pure-data/pure-data.git  
+```
+
 ### install dependencies:
+
+```sh
 sudo apt-get install build-essential automake autoconf libtool gettext  
 sudo apt-get install libasound2-dev libjack-jackd2-dev  
 sudo apt-get install libfftw3-dev  
 sudo apt-get install tk  
+```
+
 ### compile:
+
+```sh
 cd pure-data/  
+./autogen.sh
 ./configure --enable-jack --enable-fftw  
 make -j4  
+```
+
 ### install:
+
+```sh
 sudo make install  
+```
+
 ### enable realtime priority for pi user:
-Add to /etc/security/limits.d/99-realtime.conf:  
+Add to /etc/security/limits.d/99-realtime.conf : 
+
 ```
-    @audio   -  rtprio     99  
-	@audio   -  memlock    unlimited  
+@audio   -  rtprio     99  
+@audio   -  memlock    unlimited  
 ```
+
 Add pi to group audio:  
 ```
 sudo usermod -a -G audio pi  
@@ -113,6 +132,7 @@ sudo bash read-only-fs.sh
 
 Create next dhcpdc leases on a RAM disk:  
 ```
+sudo mkdir /var/lib/dhcpcd5-orig
 sudo mv /var/lib/dhcpcd5/ /var/lib/dhcpcd5-orig  
 sudo ln -s /var/tmp/ /var/lib/dhcpcd5
 ```
